@@ -1,0 +1,71 @@
+{
+    "bytes": 0,
+    "contents": [
+        {
+            "bytes": 130,
+            "client_mtime": "Mon, 25 Nov 2013 04:20:52 +0000",
+            "icon": "page_white_text",
+            "is_dir": false,
+            "mime_type": "application/octet-stream",
+            "modified": "Mon, 25 Nov 2013 04:20:54 +0000",
+            "path": "/cms/lists/bars.md",
+            "rev": "21b7009aba9a",
+            "revision": 8631,
+            "root": "dropbox",
+            "size": "130 bytes",
+            "thumb_exists": false
+        },
+        {
+            "bytes": 427,
+            "client_mtime": "Mon, 25 Nov 2013 04:20:52 +0000",
+            "icon": "page_white_text",
+            "is_dir": false,
+            "mime_type": "application/octet-stream",
+            "modified": "Mon, 25 Nov 2013 04:20:54 +0000",
+            "path": "/cms/lists/books.md",
+            "rev": "21b8009aba9a",
+            "revision": 8632,
+            "root": "dropbox",
+            "size": "427 bytes",
+            "thumb_exists": false
+        },
+        {
+            "bytes": 87,
+            "client_mtime": "Mon, 25 Nov 2013 04:20:52 +0000",
+            "icon": "page_white_text",
+            "is_dir": false,
+            "mime_type": "application/octet-stream",
+            "modified": "Mon, 25 Nov 2013 04:20:54 +0000",
+            "path": "/cms/lists/brooklyn.md",
+            "rev": "21b9009aba9a",
+            "revision": 8633,
+            "root": "dropbox",
+            "size": "87 bytes",
+            "thumb_exists": false
+        },
+        {
+            "bytes": 283,
+            "client_mtime": "Mon, 25 Nov 2013 04:20:52 +0000",
+            "icon": "page_white_text",
+            "is_dir": false,
+            "mime_type": "application/octet-stream",
+            "modified": "Mon, 25 Nov 2013 04:20:54 +0000",
+            "path": "/cms/lists/cocktails.md",
+            "rev": "21ba009aba9a",
+            "revision": 8634,
+            "root": "dropbox",
+            "size": "283 bytes",
+            "thumb_exists": false
+        }
+    ],
+    "hash": "7884fc4b2648289b0c38e02cf03d0823",
+    "icon": "folder",
+    "is_dir": true,
+    "modified": "Mon, 25 Nov 2013 04:20:26 +0000",
+    "path": "/cms/lists",
+    "rev": "21b6009aba9a",
+    "revision": 8630,
+    "root": "dropbox",
+    "size": "0 bytes",
+    "thumb_exists": false
+}
