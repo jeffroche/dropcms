@@ -4,3 +4,5 @@ dropbox==1.6
 gunicorn==18.
 Markdown==2.3.1
 mock==1.0.1
+awscli (1.2.13)
+Fabric (1.8.2)
