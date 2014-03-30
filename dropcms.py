@@ -1,6 +1,8 @@
 import os
 import dropbox
 import markdown
+import argparse
+import json
 
 
 class Page(object):
@@ -99,3 +101,44 @@ class DropCMS(object):
         page_data = content['folders'][folder_name]['pages'][page_name]
         page = Page(page_data['path'], self.dropbox)
         return page
+
+
+def cli():
+    args = parse_args()
+    settings = load_settings(args.settings)
+    COMMANDS = ['build', 'run', 's3sync']
+    assert args.command in COMMANDS
+    if args.command == 'build':
+        import freeze
+        freeze.build({
+            "DROPBOX_ACCESS_TOKEN": settings["DROPBOX_TOKEN"],
+            "DROPBOX_ROOT_FOLDER": settings["DROPBOX_ROOT"],
+            "FREEZER_DESTINATION": settings["OUTPUT_DIR"]})
+    elif args.command == 'run':
+        from web import create_app
+        app = create_app({
+            "DROPBOX_ACCESS_TOKEN": settings["DROPBOX_TOKEN"],
+            "DROPBOX_ROOT_FOLDER": settings["DROPBOX_ROOT"]})
+        app.debug = True
+        app.run()
+    elif args.command == 's3sync':
+        app.freeze
+
+
+def load_settings(settings_path):
+    f = open(settings_path)
+    raw = json.loads(f.read())
+    settings = {key.upper(): value for (key, value) in raw.iteritems()}
+    return settings
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="A tool to generate a static site from dropbox")
+    parser.add_argument(dest='command')
+    parser.add_argument('-s', '--settings', dest='settings')
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    cli()

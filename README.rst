@@ -8,7 +8,7 @@ Installation
 
 ::
 
-  $ pip install -r requirments.txt
+  $ pip install dropcms
 
 
 Setup
@@ -58,3 +58,28 @@ Note: to sync with S3, you must have AWS configured. See `here <http://docs.aws.
 
   $ fab sync
 
+
+CLI Usage
+=========
+
+Build static files locally::
+
+  dropcms build -s config.json -o _build
+
+Run the site locally (to test)::
+
+  dropcms run -s config.json -u 0.0.0.0:5000
+
+Sync to S3::
+
+  dropcms s3sync -s config.json
+
+Configuration
+=============
+
+JSON file containing settings. Parameters:
+
+- ``dropbox_root``: the folder within your Dropbox to load content from
+- ``dropbox_token``: API token. Generate a Dropbox API token that has access to your account (see `here <https://www.dropbox.com/developers/core/start/python>`_ for instructions). Alternatively, the token can be set as the environmental variable ``DROPBOX_ACCESS_TOKEN``
+- ``S3_bucket`` The S3 buck to sync content with
+- ``redis_url`` (Optional) to reduce the amount of time it takes to refresh the data, set up Redis caching by setting the URL here

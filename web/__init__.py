@@ -6,11 +6,9 @@ __all__ = ["create_app"]
 import flask
 
 
-def create_app(config_filename=None):
+def create_app(config_overrides={}):
     app = flask.Flask(__name__)
-    app.config.from_object("web.default_settings")
-    if config_filename is not None:
-        app.config.from_pyfile(config_filename)
+    app.config.update(config_overrides)
 
     from views import page_router
     app.register_blueprint(page_router)
