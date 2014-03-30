@@ -70,10 +70,6 @@ Run the site locally (to test)::
 
   dropcms run -s config.json -u 0.0.0.0:5000
 
-Sync to S3::
-
-  dropcms s3sync -s config.json
-
 Configuration
 =============
 
