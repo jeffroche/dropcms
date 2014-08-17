@@ -1,40 +1,46 @@
-import boto
+# import tempfile
 from dropbox.client import DropboxClient
 from flask import Flask, abort, request
 from hashlib import sha256
-import hmac
 from jinja2 import Environment, PackageLoader
-import json
 from markdown import markdown
+from boto import s3 as boto_s3
+from boto.s3.connection import S3Connection
+import hmac
+import json
 import os
 import redis
-# import tempfile
 import threading
 
+
+app = Flask(__name__)
+
 if os.environ.get('HEROKU'):
+    app.config.from_object('config_heroku')
     redis_url = os.environ['REDISTOGO_URL']
     redis_client = redis.from_url(redis_url)
 else:
+    app.debug = True
+    app.config.from_object('config')
     redis_client = redis.StrictRedis(host='localhost', port=6379)
 
-# App key and secret from the App console (dropbox.com/developers/apps)
-APP_KEY = os.environ['APP_KEY']
-APP_SECRET = os.environ['APP_SECRET']
 
-app = Flask(__name__)
-app.debug = True
+# App key and secret from the App console (dropbox.com/developers/apps)
+APP_SECRET = app.config['DROPBOX_APP_SECRET']
+
 
 # A random secret used by Flask to encrypt session data cookies
-app.secret_key = os.environ['FLASK_SECRET_KEY']
+app.secret_key = app.config['FLASK_SECRET_KEY']
 
-DROPBOX_TOKEN = os.environ['DROPBOX_TOKEN']
-DROPBOX_ROOT = os.environ['DROPBOX_ROOT']
+DROPBOX_TOKEN = app.config['DROPBOX_TOKEN']
+DROPBOX_ROOT = app.config['DROPBOX_ROOT']
 
 template_env = Environment(loader=PackageLoader('web', 'templates'))
 
 # S3
-s3 = boto.connect_s3()
-s3_bucket = s3.get_bucket(os.environ['S3_BUCKET'])
+s3 = S3Connection(app.config['AWS_ACCESS_KEY_ID'],
+                  app.config['AWS_SECRET_ACCESS_KEY'])
+s3_bucket = s3.get_bucket(app.config['S3_BUCKET'])
 s3_bucket.set_acl('public-read')
 
 
@@ -98,7 +104,7 @@ def s3_upload(html, filename):
     s3_file_path = "%s/index.html" % filename
     key = s3_bucket.get_key(s3_file_path)
     if not key:
-        key = boto.s3.key.Key(s3_bucket)
+        key = boto_s3.key.Key(s3_bucket)
         key.key = s3_file_path
 
     # Write HTML
@@ -134,7 +140,7 @@ def validate_request():
     return signature == hmac.new(APP_SECRET, request.data, sha256).hexdigest()
 
 
-@app.route('/webhook')
+@app.route('/webhook', methods=['POST'])
 def webhook():
     """Receive a list of changed user IDs from Dropbox and process each.
     """
@@ -150,6 +156,16 @@ def webhook():
         # in a worker process.
         threading.Thread(target=update, args=()).start()
     return ''
+
+
+@app.route('/webhook', methods=['GET'])
+def challenge():
+    """Respond to the webhook challenge (GET request) by echoing back
+    the challenge parameter.
+    """
+
+    return request.args.get('challenge')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
