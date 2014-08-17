@@ -107,15 +107,9 @@ def s3_upload(html, filename):
         key = boto_s3.key.Key(s3_bucket)
         key.key = s3_file_path
 
-    # Write HTML
-    # with tempfile.TemporaryFile() as f:
-    #     f.write(html)
-    #     f.seek(0)
-    #     key.set_contents_from_file(f)
-    # key.set_acl('public-read')
     key.content_type = 'text/html; charset=UTF-8'
     key.set_contents_from_string(html, policy='public-read')
-    print "Uploaded %s" % filename
+    app.logger.info("Uploaded %s", filename)
 
 
 def add_template(html):
@@ -165,6 +159,12 @@ def challenge():
     """
 
     return request.args.get('challenge')
+
+
+@app.route('/hello')
+def hello():
+    app.logger.info("Hello world")
+    return "Hello world"
 
 
 if __name__ == '__main__':

@@ -1,1 +1,1 @@
-web: gunicorn dropcms:app
+web: gunicorn dropcms:app --log-file=-
