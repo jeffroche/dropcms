@@ -8,6 +8,7 @@ from boto import s3 as boto_s3
 from boto.s3.connection import S3Connection
 import hmac
 import json
+import logging
 import os
 import redis
 import threading
@@ -19,11 +20,19 @@ if os.environ.get('HEROKU'):
     app.config.from_object('config_heroku')
     redis_url = os.environ['REDISTOGO_URL']
     redis_client = redis.from_url(redis_url)
+    stream_handler = logging.StreamHandler()
+    app.logger.addHandler(stream_handler)
+    log_fmt = logging.Formatter('%(asctime)s %(levelname)s: %(message)s \
+        [in %(pathname)s:%(lineno)d]')
+    stream_handler.setFormatter(log_fmt)
 else:
     app.debug = True
     app.config.from_object('config')
     redis_client = redis.StrictRedis(host='localhost', port=6379)
 
+
+# Set logging info
+app.logger.setLevel(logging.INFO)
 
 # App key and secret from the App console (dropbox.com/developers/apps)
 APP_SECRET = app.config['DROPBOX_APP_SECRET']
@@ -139,8 +148,10 @@ def webhook():
     """Receive a list of changed user IDs from Dropbox and process each.
     """
 
+    app.logger.info("Received dropbox webhook")
     # Make sure this is a valid request from Dropbox
     if not validate_request():
+        app.logger.info("Dropbox webhook was invalid")
         abort(403)
 
     for uid in json.loads(request.data)['delta']['users']:
